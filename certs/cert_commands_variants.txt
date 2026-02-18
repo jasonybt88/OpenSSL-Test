@@ -1,0 +1,16 @@
+# Additional certificate variants (RSA + ECC) used in this project
+# Note: use local config explicitly because default openssl.cnf path is unavailable on this machine.
+
+# RSA variants
+openssl req -config openssl-local.cnf -x509 -newkey rsa:3072 -sha384 -nodes -keyout alice_rsa3072_sha384_key.pem -out alice_rsa3072_sha384_cert.pem -days 365 -subj "/CN=Alice RSA3072 SHA384"
+openssl req -config openssl-local.cnf -x509 -newkey rsa:4096 -sha512 -nodes -keyout bob_rsa4096_sha512_key.pem -out bob_rsa4096_sha512_cert.pem -days 365 -subj "/CN=Bob RSA4096 SHA512"
+
+# ECC variants
+openssl req -config openssl-local.cnf -x509 -newkey ec -pkeyopt ec_paramgen_curve:secp384r1 -pkeyopt ec_param_enc:named_curve -sha384 -nodes -keyout alice_ec_p384_sha384_key.pem -out alice_ec_p384_sha384_cert.pem -days 365 -subj "/CN=Alice EC P-384 SHA384"
+openssl req -config openssl-local.cnf -x509 -newkey ec -pkeyopt ec_paramgen_curve:secp521r1 -pkeyopt ec_param_enc:named_curve -sha512 -nodes -keyout bob_ec_p521_sha512_key.pem -out bob_ec_p521_sha512_cert.pem -days 365 -subj "/CN=Bob EC P-521 SHA512"
+
+# Verification
+openssl x509 -in alice_rsa3072_sha384_cert.pem -noout -text | Select-String -Pattern "Subject:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in bob_rsa4096_sha512_cert.pem -noout -text | Select-String -Pattern "Subject:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in alice_ec_p384_sha384_cert.pem -noout -text | Select-String -Pattern "Subject:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in bob_ec_p521_sha512_cert.pem -noout -text | Select-String -Pattern "Subject:|Public Key Algorithm|Signature Algorithm"

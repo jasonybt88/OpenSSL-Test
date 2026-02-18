@@ -1,0 +1,16 @@
+# OpenSSL cert generation commands used in this project
+# Note: pass -config openssl-local.cnf because this OpenSSL build has no default openssl.cnf path.
+
+# RSA 2048 self-signed certs with SHA-256
+openssl req -config openssl-local.cnf -x509 -newkey rsa:2048 -sha256 -nodes -keyout alice_rsa_key.pem -out alice_rsa_cert.pem -days 365 -subj "/CN=Alice RSA"
+openssl req -config openssl-local.cnf -x509 -newkey rsa:2048 -sha256 -nodes -keyout bob_rsa_key.pem -out bob_rsa_cert.pem -days 365 -subj "/CN=Bob RSA"
+
+# ECC P-256 (prime256v1) self-signed certs with SHA-256
+openssl req -config openssl-local.cnf -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -pkeyopt ec_param_enc:named_curve -sha256 -nodes -keyout alice_key.pem -out alice_cert.pem -days 365 -subj "/CN=Alice"
+openssl req -config openssl-local.cnf -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -pkeyopt ec_param_enc:named_curve -sha256 -nodes -keyout bob_key.pem -out bob_cert.pem -days 365 -subj "/CN=Bob"
+
+# Verification (algorithm + subject/issuer)
+openssl x509 -in alice_rsa_cert.pem -noout -subject -issuer -text | Select-String -Pattern "Subject:|Issuer:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in bob_rsa_cert.pem -noout -subject -issuer -text | Select-String -Pattern "Subject:|Issuer:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in alice_cert.pem -noout -subject -issuer -text | Select-String -Pattern "Subject:|Issuer:|Public Key Algorithm|Signature Algorithm"
+openssl x509 -in bob_cert.pem -noout -subject -issuer -text | Select-String -Pattern "Subject:|Issuer:|Public Key Algorithm|Signature Algorithm"
